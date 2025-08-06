@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Toast from "react-native-toast-message";
+
 import {
   View,
   Text,
@@ -7,15 +9,40 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { useAuthStore } from "../store/auth";
 export default function SignUp() {
   const navigation = useNavigation<any>();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const login = useAuthStore((state) => state.login);
+
+  const signup = useAuthStore((s) => s.signup);
+
+  const handleSignup = async () => {
+    try {
+      await signup(username, email, password);
+
+      Toast.show({
+        type: "success",
+        text1: "Signup successful 🎉",
+        position: "top",
+      });
+
+      navigation.navigate("Login");
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Signup failed 😞",
+        text2: e?.message || "Something went wrong",
+        position: "top",
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Top logo section */}
@@ -44,8 +71,8 @@ export default function SignUp() {
               style={styles.input}
               placeholder="Username"
               placeholderTextColor="#999"
-              value={email}
-              onChangeText={setEmail}
+              value={username}
+              onChangeText={setUsername}
             />
           </View>
           <Text style={styles.inputLabel}>Gmail</Text>
@@ -98,7 +125,7 @@ export default function SignUp() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
       >
-        <TouchableOpacity style={styles.touchable} onPress={() => login()}>
+        <TouchableOpacity style={styles.touchable} onPress={handleSignup}>
           <Text style={styles.signInText}>Sign Up</Text>
         </TouchableOpacity>
       </LinearGradient>

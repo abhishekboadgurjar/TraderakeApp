@@ -6,16 +6,38 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  Image,
+  Image
 } from "react-native";
+import Toast from "react-native-toast-message";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { useAuthStore } from "../store/auth";
 export default function Signin() {
   const navigation = useNavigation<any>();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const login = useAuthStore((state) => state.login);
+  const login = useAuthStore((s) => s.login);
+
+  const handleLogin = async () => {
+    try {
+      await login(username, password);
+
+      Toast.show({
+        type: "success",
+        text1: "Login successful 🎉",
+        position: "top",
+      });
+
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Login failed ❌",
+        text2: e?.message || "Something went wrong",
+        position: "top",
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Top logo section */}
@@ -44,8 +66,8 @@ export default function Signin() {
               style={styles.input}
               placeholder="Email"
               placeholderTextColor="#999"
-              value={email}
-              onChangeText={setEmail}
+              value={username}
+              onChangeText={setUsername}
             />
           </View>
 
@@ -86,9 +108,9 @@ export default function Signin() {
       >
         <TouchableOpacity
           style={styles.touchable}
-          onPress={() => navigation.replace("Home")}
+          // onPress={() => navigation.replace("Home")}
         >
-          <Text style={styles.signInText} onPress={() => login()}>
+          <Text style={styles.signInText} onPress={handleLogin}>
             Sign in
           </Text>
         </TouchableOpacity>
