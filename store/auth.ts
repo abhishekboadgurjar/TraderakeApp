@@ -63,7 +63,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (!refresh) return;
 
     try {
-      const res = await axiosInstance.post("/accounts/api/", { refresh });
+      const res = await axiosInstance.post("/accounts/api/token/refresh/", { refresh });
       const { access } = res.data;
 
       await AsyncStorage.setItem("accessToken", access);
@@ -104,8 +104,9 @@ logout: async () => {
 function startRefreshInterval(refreshToken: string) {
   if (refreshInterval) clearInterval(refreshInterval);
 
-  refreshInterval = setInterval(async () => {
-    const { refreshAccessToken } = useAuthStore.getState();
-    await refreshAccessToken();
-  }, 5 * 60 * 1000); // 🔁 every 5 minutes
+ refreshInterval = setInterval(async () => {
+  console.log("Trying to refresh token");
+  await useAuthStore.getState().refreshAccessToken();
+},5 * 60 * 1000); 
+
 }
