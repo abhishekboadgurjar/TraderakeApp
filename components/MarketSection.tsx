@@ -1,6 +1,12 @@
-// components/MarketSection.tsx
 import React, { useCallback } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import MarketCard from "./MarketCard";
 import { MarketItem } from "../data/dummyData";
 
@@ -9,15 +15,21 @@ interface MarketSectionProps {
 }
 
 export default function MarketSection({ marketData }: MarketSectionProps) {
-  const renderMarketCard = useCallback(({ item }: { item: MarketItem }) => (
-    <MarketCard item={item} />
-  ), []);
+  const navigation = useNavigation();
+
+  const renderMarketCard = useCallback(
+    ({ item }: { item: MarketItem }) => <MarketCard item={item} />,
+    []
+  );
 
   return (
     <View>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>MARKET</Text>
-        <Text style={styles.more}>More</Text>
+
+        <TouchableOpacity onPress={() => navigation.navigate("Market")}>
+          <Text style={styles.more}>More</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList

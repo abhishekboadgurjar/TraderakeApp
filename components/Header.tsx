@@ -2,8 +2,19 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+// Define the type of navigation stack
+type RootStackParamList = {
+  Profile: undefined;
+  Notification: undefined;
+};
 
 export default function Header() {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
     <View style={styles.header}>
       <Image source={require("../assets/logo.png")} style={styles.logo} />
@@ -11,15 +22,18 @@ export default function Header() {
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         {/* Notification Icon with Badge */}
-        <View style={[styles.notification, { marginRight: 12 }]}>
+        <TouchableOpacity
+          style={[styles.notification, { marginRight: 12 }]}
+          onPress={() => navigation.navigate("Notification")}
+        >
           <Ionicons name="notifications-outline" size={22} color="#fff" />
           <View style={styles.badge}>
             <Text style={styles.badgeText}>2</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Profile Icon */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           <Ionicons name="person-circle-outline" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
